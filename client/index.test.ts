@@ -18,11 +18,12 @@ test("one transfer", () => {
 	const payer = new Keypair();
 	svm.airdrop(payer.publicKey, BigInt(LAMPORTS_PER_SOL));
 	const program_id = PublicKey.unique();
-    svm.addProgramFromFile(program_id,"./CPI.so");
+    svm.addProgramFromFile(program_id , "./CPI.so");
     const data_account = new Keypair();
 
 	const blockhash = svm.latestBlockhash();
 	const transferLamports = 1_000_000n;
+    
 	const ixs = [
 		SystemProgram.createAccount({
             fromPubkey:payer.publicKey,
@@ -40,38 +41,27 @@ test("one transfer", () => {
 	svm.sendTransaction(tx);
     console.log("Account info: ", svm.getAccount(data_account.publicKey));
 
+    function sendTxnToContract() {
+        const ix2 = [new TransactionInstruction({
+            keys: [
+              {pubkey: data_account.publicKey, isSigner: false, isWritable: true},
+            ],
+            programId: program_id,
+            data:Buffer.from(""),
+        })];
+        const tx2 = new Transaction();
+        const blockhash = svm.latestBlockhash();
+        tx2.recentBlockhash = blockhash;
+        tx2.feePayer = payer.publicKey;
+        tx2.add(...ix2);
+        tx2.sign(payer);
+        svm.sendTransaction(tx2);
+    }
+    sendTxnToContract();
+    sendTxnToContract();
+    sendTxnToContract();
+    sendTxnToContract();
 
-    const ix2 = [new TransactionInstruction({
-        keys: [
-          {pubkey: data_account.publicKey, isSigner: false, isWritable: true},
-        ],
-        programId: program_id,
-        data:Buffer.from(""),
-    }),{
-        keys: [
-          {pubkey: data_account.publicKey, isSigner: false, isWritable: true},
-        ],
-        programId: program_id,
-        data:Buffer.from(""),
-    },{
-        keys: [
-          {pubkey: data_account.publicKey, isSigner: false, isWritable: true},
-        ],
-        programId: program_id,
-        data:Buffer.from(""),
-    },{
-        keys: [
-          {pubkey: data_account.publicKey, isSigner: false, isWritable: true},
-        ],
-        programId: program_id,
-        data:Buffer.from(""),
-    }];
-    const tx2 = new Transaction();
-	tx2.recentBlockhash = blockhash;
-    tx2.feePayer = payer.publicKey;
-	tx2.add(...ix2);
-	tx2.sign(payer);
-	svm.sendTransaction(tx2);
-    console.log("Account info: ", svm.getAccount(data_account.publicKey));
+    console.log("data account: ",svm.getAccount(data_account.publicKey)?.data[0]);
     
 });
