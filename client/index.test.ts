@@ -18,7 +18,7 @@ test("one transfer", () => {
 	const payer = new Keypair();
 	svm.airdrop(payer.publicKey, BigInt(LAMPORTS_PER_SOL));
 	const program_id = PublicKey.unique();
-    svm.addProgramFromFile(program_id , "./CPI.so");
+    svm.addProgramFromFile(program_id , "./double.so");
     const data_account = new Keypair();
 
 	const blockhash = svm.latestBlockhash();

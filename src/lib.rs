@@ -29,5 +29,6 @@ pub fn counter_program(
     }
     data.serialize(&mut *account_data.data.borrow_mut());
     msg!("Counter Updated To: {} ", data.count);
+    
     Ok(())
 }
