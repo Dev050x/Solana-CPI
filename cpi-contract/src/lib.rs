@@ -19,13 +19,13 @@ pub fn cpi_program(
     let instruction = Instruction{
         program_id: *double_account.key,
         accounts: vec![AccountMeta{
-            pubkey:*double_account.key,
+            pubkey:*data_account.key,
             is_signer:false,
-            is_writable:false,
+            is_writable:true,
         }],
         data:vec![],
     };
     invoke(&instruction, &[data_account.clone()]);
-
+    
     Ok(())
 }

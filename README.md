@@ -1,0 +1,2 @@
+## Basically this contract contain mediator(cpi) which calle actual double contract
+## user account (passes the data account and double contract account) -> CPI Contract(passed data account) -> double contract account
